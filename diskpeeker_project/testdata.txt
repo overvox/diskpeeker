@@ -1,0 +1,21 @@
+Filesystem                         Size  Used Avail Use% Mounted on
+udev                               3.7G     0  3.7G   0% /dev
+tmpfs                              763M  2.5M  760M   1% /run
+/dev/mapper/ubuntu--vg-ubuntu--lv  915G  543G  334G  62% /
+tmpfs                              3.8G     0  3.8G   0% /dev/shm
+tmpfs                              5.0M     0  5.0M   0% /run/lock
+tmpfs                              3.8G     0  3.8G   0% /sys/fs/cgroup
+/dev/sda2                          976M  206M  704M  23% /boot
+/dev/loop14                        119M  119M     0 100% /snap/docker/1779
+/dev/loop15                        142M  142M     0 100% /snap/docker/2285
+/dev/loop18                         92M   92M     0 100% /snap/lxd/23991
+/dev/loop2                          50M   50M     0 100% /snap/snapd/17883
+/dev/loop7                         117M  117M     0 100% /snap/core/14399
+/dev/loop5                          92M   92M     0 100% /snap/lxd/24061
+/dev/loop6                          45M   45M     0 100% /snap/certbot/2582
+/dev/loop1                          64M   64M     0 100% /snap/core20/1738
+/dev/loop9                          56M   56M     0 100% /snap/core18/2654
+/dev/loop10                         45M   45M     0 100% /snap/certbot/2618
+/dev/loop11                         56M   56M     0 100% /snap/core18/2667
+/dev/loop0                          64M   64M     0 100% /snap/core20/1778
+tmpfs                              763M     0  763M   0% /run/user/1000
