@@ -1,5 +1,5 @@
-import './App.css';
 import DiskpeekerPage from './pages/DiskpeekerPage'
+import './scss/pico.react.css'
 
 function App() {
   return (

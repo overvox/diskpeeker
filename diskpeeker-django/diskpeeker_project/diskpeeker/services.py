@@ -24,20 +24,25 @@ class DiskService:
                 return True
 
     @staticmethod
-    def get_nonhidden_disk_usages() -> list[DiskUsage]:
+    def get_disk_usages(getVisibleOnly: bool = False) -> list[DiskUsage]:
         """gets current disk usage for all non-hidden disks."""
         disk_partitions = psutil.disk_partitions()
-        nonhidden_diskinfos = DiskInfo.objects.filter(hidden = False) 
 
-        nonhidden_disk_partitions = list(filter(lambda partition: any(info.device == partition.device for info in nonhidden_diskinfos), disk_partitions))
+        diskinfos: any
+        if getVisibleOnly:
+            diskinfos = DiskInfo.objects.filter(hidden = False)
+        else:
+            diskinfos = DiskInfo.objects.all()
 
-        usage_list:DiskUsage = []
+        disk_partitions = list(filter(lambda partition: any(info.device == partition.device for info in diskinfos), disk_partitions))
 
-        for partition in nonhidden_disk_partitions:
+        usage_list = []
+
+        for partition in disk_partitions:
             try:
                 usage = psutil.disk_usage(partition.mountpoint)
-                usage_list.append(DiskUsage(device=partition.device, type=partition.fstype, total=usage.total, used=usage.used, free=usage.free))
+                usage_list.append(DiskUsage(device=partition.device, type=partition.fstype, total=usage.total, used=usage.used))
             except:
-                usage_list.append(DiskUsage(device=partition.device, type=partition.fstype, total=0, used=0, free=0))
+                usage_list.append(DiskUsage(device=partition.device, type=partition.fstype, total=0, used=0))
             
         return usage_list

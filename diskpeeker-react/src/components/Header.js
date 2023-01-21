@@ -2,8 +2,8 @@ import React from 'react'
 
 function Header() {
     return (
-        <header>
-            AppName
+        <header className='container'>
+            <h1>Diskpeeker</h1>
         </header>
     )
 }
