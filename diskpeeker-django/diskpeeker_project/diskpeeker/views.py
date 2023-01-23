@@ -13,7 +13,7 @@ class DiskViewSet(viewsets.ViewSet):
 
     serializer_class = DiskInfoSerializer
 
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['POST'])
     def init(self, request):
         if DiskService.init_disks():
             return Response(status=status.HTTP_200_OK)
@@ -39,14 +39,14 @@ class DiskViewSet(viewsets.ViewSet):
         serializer.save()
         return Response({'status': 'disk info updated'})
 
-    @action(detail=False, methods=['get'])
-    def list_usage(self, request):
+    @action(detail=False, methods=['GET'])
+    def usage(self, request):
         usages = DiskService.get_disk_usages()
         serializer = DiskUsageSerializer(usages, many=True)
         return Response(data=serializer.data)
 
-    @action(detail=False, methods=['get'])
-    def full_diskinfo(self, request):
+    @action(detail=False, methods=['GET'])
+    def full(self, request):
         allDisks = DiskInfo.objects.all()
         usages = DiskService.get_disk_usages()
 

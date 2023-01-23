@@ -2,6 +2,10 @@ import React, {useState, useEffect} from 'react'
 import axios from "axios"
 import DiskUsageBar from './DiskUsageBar';
 
+function bytesToGigaBytes(bytes) {
+  return (bytes / 1073741824).toFixed(0);
+}
+
 const Diskpeeker = () => {
     const [diskData, setDiskData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -14,7 +18,7 @@ const Diskpeeker = () => {
         const getDiskData = async () => {
           try {
             await new Promise(r => setTimeout(r, 1000));
-            const result = await axios('http://localhost:8000/diskinfo/full_diskinfo/');
+            const result = await axios('http://localhost:8000/diskinfo/full/');
             setDiskData(result.data)
         
             // await Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
@@ -41,32 +45,26 @@ const Diskpeeker = () => {
       
       return (
         <main className='container'>
-          <section>
+          <section id='grid'>
             <article>
             {loading && <p aria-busy="true"></p>}
 
             {error && (<div>{`There is a problem fetching the disk data - ${error}`}</div>)}
 
             {diskData &&
-
               diskData.filter(isDiskVisible).map(({device, name, type, total, used, hidden}) => (
-                <div className="grid" key={device + "-" + name}>
-                  <p>{name}</p>
-                  <p>{device}</p> 
-                  <p>{type === "" ? "Unknown" : type}</p>
-                  <p><DiskUsageBar total={total} used={used}></DiskUsageBar></p>
-                  <p>{hidden ? "Hidden" : "Visible"}</p> 
-                </div>
-              ))}
-
-            {diskData &&
-              diskData.filter(isDiskHidden).map(({ device, name, type, total, used, hidden}) => (
-                <div className="grid" key={device + "-" + name}>
-                  <p>{name}</p> 
-                  <p>{device}</p> 
-                  <p>{type === "" ? "Unknown" : type}</p>
-                  <p><DiskUsageBar total={1} used={0}></DiskUsageBar></p>
-                  <p>{hidden ? "Hidden" : "Visible"}</p> 
+                <div className="diskContainer" key={device + "-" + name}>
+                  <strong>{name}</strong>
+                  <div className="grid" >
+                    <div>
+                      <div className="margin1">{device}</div>
+                      <div className="margin1">{type === "" ? "Unknown" : type}</div>
+                    </div> 
+                    <div>
+                      <div className="margin1"><DiskUsageBar total={total} used={used}></DiskUsageBar></div>
+                      <div>{bytesToGigaBytes(total-used)} GB free of {bytesToGigaBytes(total)} GB</div>
+                    </div>
+                  </div>
                 </div>
               ))}
               </article>
