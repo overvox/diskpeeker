@@ -51,7 +51,7 @@
   --block-spacing-horizontal: var(--spacing);
 
   @if ($enable-classes and $enable-grid) {
-    --grid-spacing-vertical: 0;
+    --grid-spacing-vertical: 1rem;
     --grid-spacing-horizontal: var(--spacing);
   }
 

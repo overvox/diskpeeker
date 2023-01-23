@@ -1,0 +1,24 @@
+#grid .grid>* {
+    padding: calc(var(--spacing)/ 2) 0;
+    border-radius: var(--border-radius);
+    background: var(--code-background-color);
+    font-size: 87.5%;
+    text-align: center;
+}
+
+.grid {
+    padding: calc(var(--spacing)) 0;
+}
+
+.diskContainer {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.margin1 {
+    margin: calc(var(--spacing)/ 2) calc(var(--spacing)/ 2);
+}
+
+#buttons a[role=button] {
+    margin-right: calc(var(--spacing) * .5);
+}
