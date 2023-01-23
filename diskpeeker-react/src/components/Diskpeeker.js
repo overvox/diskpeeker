@@ -44,7 +44,6 @@ const Diskpeeker = () => {
       }, []);
       
       return (
-        <main className='container'>
           <section id='grid'>
             <article>
             {loading && <p aria-busy="true"></p>}
@@ -69,7 +68,6 @@ const Diskpeeker = () => {
               ))}
               </article>
           </section>
-        </main>
       );
 }
 

@@ -3,7 +3,7 @@
 
 // Set the root element for $enable-semantic-container and $enable-responsive-spacings
 //$semantic-root-element: "body" !default;
-$semantic-root-element: "div#root" !default;
+$semantic-root-element: "div#root";
 
 // Enable <header>, <main>, <footer> inside $semantic-root-element as containers
 $enable-semantic-container: false !default;
