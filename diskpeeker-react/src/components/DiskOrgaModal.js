@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react'
+import axios from "axios"
 
 function doLog() {
     console.log("click")
@@ -7,8 +8,29 @@ function doLog() {
 function DiskOrgaModal(props) {
     const [modalOpen, setModalOpen] = useState(props.open);
 
+    const [diskData, setDiskData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const getDiskData = async () => {
+        try {
+          setLoading(true)
+          await new Promise(r => setTimeout(r, 100));
+          const result = await axios('http://localhost:8000/diskinfo/');
+          setDiskData(result.data)
+  
+          setError(null);
+        } catch (err) {
+          setError(err.message);
+          setDiskData(null);
+        } finally {
+          setLoading(false);
+        }
+      };
+
     useEffect(() => {
-        setModalOpen(props.open)
+        setModalOpen(props.open);
+        getDiskData()
       }, [props.open]);
 
     return (
@@ -26,6 +48,18 @@ function DiskOrgaModal(props) {
                 Pellentesque sodales odio sit amet augue finibus pellentesque. 
                 Nullam finibus risus non semper euismod.
                 </p>
+
+                {diskData &&
+                    diskData.map(({device, name, hidden}) => (
+                        <div aria-busy={loading} className="diskContainer" key={device + "-" + name}>
+                        <strong>{name}</strong>
+                        <div className="grid">
+                            <div>
+                            <div className="margin1" >{device}</div>
+                            </div>
+                            </div>
+                        </div>
+                    ))};
                 <footer>
                 <a href="#cancel"
                     role="button"
