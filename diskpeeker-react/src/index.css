@@ -23,6 +23,6 @@
     margin-right: calc(var(--spacing) * .5);
 }
 
-#buttons .grid{
+#buttons .grid {
     grid-row-gap: 0;
 }
