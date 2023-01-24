@@ -14,7 +14,7 @@ const Diskpeeker = () => {
     const getDiskData = async () => {
       try {
         setLoading(true)
-        //await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 100));
         const result = await axios('http://localhost:8000/diskinfo/full/');
         setDiskData(result.data)
     
@@ -72,7 +72,7 @@ const Diskpeeker = () => {
               ))}
 
               {diskData && 
-                <div>
+                <div id="refreshButtonContainer">
                   <a href="#" onClick={getDiskData} role="button" aria-busy={loading}>Refresh</a>
                 </div>
                 }

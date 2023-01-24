@@ -26,3 +26,7 @@
 #buttons .grid {
     grid-row-gap: 0;
 }
+
+#refreshButtonContainer {
+    text-align: right;
+}
