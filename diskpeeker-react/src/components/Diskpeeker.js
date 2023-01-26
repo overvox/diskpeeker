@@ -45,7 +45,7 @@ const Diskpeeker = () => {
       }, []);
       
       return (
-          <section id='grid'>
+          <section id='diskDashboard'>
             <article>
             {loading && !diskData && <p aria-busy="true"></p>}
 

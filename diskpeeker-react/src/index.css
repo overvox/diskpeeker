@@ -1,9 +1,16 @@
-#grid .grid>* {
+#diskDashboard .grid>* {
     padding: calc(var(--spacing)/ 2) 0;
     border-radius: var(--border-radius);
     background: var(--code-background-color);
-    font-size: 87.5%;
     text-align: center;
+}
+
+#edit-disks-modal .grid {
+    padding: calc(var(--spacing)/ 1);
+    border-radius: var(--border-radius);
+    background: var(--code-background-color);
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .grid {

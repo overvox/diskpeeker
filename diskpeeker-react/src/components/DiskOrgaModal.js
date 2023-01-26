@@ -31,6 +31,7 @@ function DiskOrgaModal(props) {
     useEffect(() => {
         setModalOpen(props.open);
         getDiskData()
+        console.log("USEEFFECT")
       }, [props.open]);
 
     return (
@@ -43,36 +44,40 @@ function DiskOrgaModal(props) {
                 onClick={props.onClose}>
                 </a>
                 <h3>Edit Disks</h3>
-                <p>
-                Cras sit amet maximus risus. 
-                Pellentesque sodales odio sit amet augue finibus pellentesque. 
-                Nullam finibus risus non semper euismod.
-                </p>
+                <p>Here you can rename and hide inidividual disks for the dashboard.</p>
 
-                {diskData &&
+                {loading && <p aria-busy="true"></p>}
+
+                {diskData && !loading &&
                     diskData.map(({device, name, hidden}) => (
-                        <div aria-busy={loading} className="diskContainer" key={device + "-" + name}>
-                        <strong>{name}</strong>
-                        <div className="grid">
-                            <div>
-                            <div className="margin1" >{device}</div>
-                            </div>
+                        <div aria-busy={loading} className="" key={device + "-" + name}>
+                            <div className="grid">
+                                <div><strong>Disk</strong><div><strong>{device}</strong></div></div>
+                                <label htmlFor="diskName">
+                                    Disk Name
+                                    <input type="text" id="diskName" name="diskName" defaultValue={name} placeholder="Disk Name" required />
+                                </label>
+                                <label htmlFor="diskHidden">
+                                    <div>Hidden</div>
+                                    <input type="checkbox" id="diskHidden" name="diskHidden" role="switch" defaultValue={hidden ? 0 : 1} />
+                                </label>
                             </div>
                         </div>
-                    ))};
+                    ))}
+
                 <footer>
-                <a href="#cancel"
+                <a href="#"
                     role="button"
                     className="secondary"
                     data-target="edit-disks-modal"
-                    onClick={doLog}>
+                    onClick={props.onClose}>
                     Cancel
                 </a>
-                <a href="#confirm"
+                <a href="#"
                     role="button"
                     data-target="edit-disks-modal"
                     onClick={doLog}>
-                    Confirm
+                    Save
                 </a>
                 </footer>
             </article>
