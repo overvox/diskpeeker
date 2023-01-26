@@ -52,9 +52,9 @@ const Diskpeeker = () => {
             {error && !loading && (<div>{`There is a problem fetching the disk data - ${error}`}</div>)}
 
             {diskData &&
-              diskData.filter(isDiskVisible).map(({device, name, type, total, used, hidden}) => (
+              diskData.filter(isDiskVisible).map(({device, name, type, total, used, hidden}, index) => (
                 <div aria-busy={loading} className="diskContainer" key={device + "-" + name}>
-                  <strong>{!loading && name}</strong>
+                  <strong>{!loading && ((index+1)  + ") " + name)}</strong>
                   <div className="grid">
                     <div>
                       <div className="margin1" >{device}</div>

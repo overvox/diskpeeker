@@ -31,8 +31,20 @@ function DiskOrgaModal(props) {
     useEffect(() => {
         setModalOpen(props.open);
         getDiskData()
-        console.log("USEEFFECT")
       }, [props.open]);
+
+    const updateNameChanged = index => e => {
+        let newArr = [...diskData];
+        newArr[index].name = e.target.value;
+        
+        setDiskData(newArr);
+    }
+
+    const updateHiddenChanged = index => e => {
+        let newArr = [...diskData];
+        newArr[index].hidden = !e.target.checked;
+        setDiskData(newArr);
+    }
 
     return (
         <dialog id="edit-disks-modal" open={modalOpen} onClick={props.onClose}>
@@ -48,22 +60,32 @@ function DiskOrgaModal(props) {
 
                 {loading && <p aria-busy="true"></p>}
 
-                {diskData && !loading &&
-                    diskData.map(({device, name, hidden}) => (
-                        <div aria-busy={loading} className="" key={device + "-" + name}>
-                            <div className="grid">
-                                <div><strong>Disk</strong><div><strong>{device}</strong></div></div>
-                                <label htmlFor="diskName">
-                                    Disk Name
-                                    <input type="text" id="diskName" name="diskName" defaultValue={name} placeholder="Disk Name" required />
-                                </label>
-                                <label htmlFor="diskHidden">
-                                    <div>Hidden</div>
-                                    <input type="checkbox" id="diskHidden" name="diskHidden" role="switch" defaultValue={hidden ? 0 : 1} />
-                                </label>
-                            </div>
-                        </div>
-                    ))}
+                <table id="diskEditTable">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Disk</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Visible</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {diskData && !loading &&
+                            diskData.map(({device, name, hidden}, index) => (
+                                <tr key={device}>
+                                    <th scope="row">{index+1}</th>
+                                    <td>{device}</td>
+                                    <td><input type="text" id={device + "NameInput"} name={device + "NameInput"} defaultValue={name} onChange={updateNameChanged(index)} placeholder="Disk Name" aria-invalid={!diskData[index].name} required /></td>
+                                    <td>
+                                        <label htmlFor="diskVisible">
+                                            <input type="checkbox" id={device + "HiddenInput"} name={device + "HiddenInput"} role="switch" onChange={updateHiddenChanged(index)} checked={!hidden ? true : false} />
+                                        </label>
+                                    </td>
+                                </tr>
+                            ))}
+                    </tbody>
+                </table>
 
                 <footer>
                 <a href="#"
