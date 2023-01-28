@@ -39,6 +39,23 @@ class DiskViewSet(viewsets.ViewSet):
         serializer.save()
         return Response({'status': 'disk info updated'})
 
+    def put(self, request):
+        serialized = self.serializer_class(data=request.data, many=isinstance(request.data, list))
+        serialized.is_valid(raise_exception=True)
+
+        diskInstance = str()
+        valid_data = serialized.validated_data
+
+        if isinstance(request.data, list):
+            ids = {disk_item['id'] for disk_item in valid_data}
+            diskInstance =  DiskInfo.objects.filter(pk__in=ids)
+        else:
+            diskInstance =  DiskInfo.objects.filter(id=serialized.validated_data['id']).first()
+            
+        serialized.update(diskInstance, valid_data)
+
+        return Response({'status': 'updated'})
+
     @action(detail=False, methods=['GET'])
     def usage(self, request):
         usages = DiskService.get_disk_usages()
