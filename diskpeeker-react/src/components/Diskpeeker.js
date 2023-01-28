@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import axios from "axios"
 import DiskUsageBar from './DiskUsageBar';
+import DiskApi from '../App'
 
 function bytesToGigaBytes(bytes) {
   return (bytes / 1073741824).toFixed(0);
@@ -17,17 +18,6 @@ const Diskpeeker = () => {
         await new Promise(r => setTimeout(r, 100));
         const result = await axios('http://localhost:8000/diskinfo/full/');
         setDiskData(result.data)
-    
-        // await Promise.all(endpoints.map((endpoint) => axios.get(endpoint)))
-        //   .then(([{data: diskinfo}, {data: diskusage}]) => {
-        //     setDiskData(diskinfo);
-        //     setDiskUsage(diskusage);
-            
-        //     diskinfo.forEach(info => {
-        //       console.log(info);
-        //       //info.concat(diskusage.find(usage => usage.device === info.device))
-        //     });
-        //   })
 
         setError(null);
       } catch (err) {
