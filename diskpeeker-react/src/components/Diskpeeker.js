@@ -4,42 +4,24 @@ import DiskUsageBar from './DiskUsageBar';
 import DiskApi from '../App'
 
 function bytesToGigaBytes(bytes) {
-  return (bytes / 1073741824).toFixed(0);
+  return (bytes / 1_073_741_824).toFixed(0);
 }
 
-const Diskpeeker = () => {
-    const [diskData, setDiskData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+const Diskpeeker = (props) => {
+    const [diskData, setDiskData] = useState(props.diskData);
+    const [loading, setLoading] = useState(props.loading);
 
-    const getDiskData = async () => {
-      try {
-        setLoading(true)
-        await new Promise(r => setTimeout(r, 100));
-        const result = await axios('http://localhost:8000/diskinfo/full/');
-        setDiskData(result.data)
-
-        setError(null);
-      } catch (err) {
-        setError(err.message);
-        setDiskData(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const isDiskVisible = (diskData) => !diskData.hidden;
+    const isDiskVisible = (disk) => !disk.hidden;
 
     useEffect(() => {
-        getDiskData();
-      }, []);
+        setDiskData(props.diskData);
+        setLoading(props.loading)
+      }, [props.diskData, props.loading]);
       
       return (
           <section id='diskDashboard'>
             <article>
             {loading && !diskData && <p aria-busy="true"></p>}
-
-            {error && !loading && (<div>{`There is a problem fetching the disk data - ${error}`}</div>)}
 
             {diskData &&
               diskData.filter(isDiskVisible).map(({device, name, type, total, used, hidden}, index) => (
@@ -63,12 +45,12 @@ const Diskpeeker = () => {
 
               {diskData && 
                 <div id="refreshButtonContainer">
-                  <a href="#" onClick={getDiskData} role="button" aria-busy={loading}>Refresh</a>
+                  <a href="#" onClick={props.onRefesh} role="button" aria-busy={loading}>Refresh</a>
                 </div>
                 }
               </article>
           </section>
       );
-}
+};
 
 export default Diskpeeker

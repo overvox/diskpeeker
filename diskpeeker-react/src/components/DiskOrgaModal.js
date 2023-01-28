@@ -27,7 +27,7 @@ function DiskOrgaModal(props) {
 
     useEffect(() => {
         setModalOpen(props.open);
-        getDiskData()
+        getDiskData();
       }, [props.open]);
 
     const updateNameChanged = index => e => {
@@ -43,32 +43,38 @@ function DiskOrgaModal(props) {
         setDiskData(newArr);
     }
 
+    const triggerOnClose = () => {
+        if (!saving) {
+            props.onClose();
+        }
+    }
+
     async function saveDiskConfig() {
         setSaving(true);
         var updatedDiskData = diskData.map(disk => ({ id: disk.id, name: disk.name, hidden: disk.hidden }));
-        console.log(updatedDiskData);
 
-        await new Promise(r => setTimeout(r, 2000));
-        const result = await axios.put('http://localhost:8000/diskinfo/', updatedDiskData);
-
-        setSaving(false);
-        props.onClose();
-        getDiskData();
+        try {
+            const result = await axios.put('http://localhost:8000/diskinfo/', updatedDiskData);
+            props.onClose();
+            props.onDiskDataSaved();
+        } catch (err) {
+            setError(err.message);
+        } finally { 
+            setSaving(false);
+        }
     }
 
     return (
-        <dialog id="edit-disks-modal" open={modalOpen} onClick={props.onClose}>
+        <dialog id="edit-disks-modal" open={modalOpen} onClick={triggerOnClose}>
             <article onClick={e => e.stopPropagation()}>
                 <a href="#close"
                 aria-label="Close"
                 className="close"
                 data-target="edit-disks-modal"
-                onClick={props.onClose}>
+                onClick={triggerOnClose}>
                 </a>
                 <h3>Edit Disks</h3>
                 <p>Here you can rename and hide inidividual disks for the dashboard.</p>
-
-                {error && !loading && (<div>{`There is a problem fetching the disk data - ${error}`}</div>)}
 
                 {loading && <p aria-busy="true"></p>}
 
@@ -89,12 +95,12 @@ function DiskOrgaModal(props) {
                                     <th scope="row">{index+1}</th>
                                     <td>{device}</td>
                                     <td>
-                                        <input type="text" id={device + "NameInput"} name={device + "NameInput"} defaultValue={name} 
+                                        <input disabled={saving} type="text" id={device + "NameInput"} name={device + "NameInput"} defaultValue={name} 
                                             onChange={updateNameChanged(index)} placeholder="Disk Name" aria-invalid={!diskData[index].name} required />
                                     </td>
                                     <td>
                                         <label htmlFor="diskVisible">
-                                            <input type="checkbox" id={device + "HiddenInput"} name={device + "HiddenInput"} role="switch" onChange={updateVisibilityChanged(index)} checked={!hidden ? true : false} />
+                                            <input disabled={saving} type="checkbox" id={device + "HiddenInput"} name={device + "HiddenInput"} role="switch" onChange={updateVisibilityChanged(index)} checked={!hidden ? true : false} />
                                         </label>
                                     </td>
                                 </tr>
@@ -102,12 +108,14 @@ function DiskOrgaModal(props) {
                     </tbody>
                 </table>
 
+                {error && !loading && (<div style={{color: "#c62828"}}>{`Error: ${error}`}</div>)}
+
                 <footer>
                 <a href="#"
                     role="button"
                     className="secondary"
                     data-target="edit-disks-modal"
-                    onClick={props.onClose}
+                    onClick={triggerOnClose}
                     aria-busy={saving}>
                     Cancel
                 </a>

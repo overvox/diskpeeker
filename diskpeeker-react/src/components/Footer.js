@@ -4,7 +4,7 @@ function Footer() {
     return (
         <footer className='container'>
             <small>
-            Built with Fun
+            Built with React & Pico.css
             </small>
         </footer>
     )
