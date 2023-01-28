@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import axios from "axios"
 import DiskUsageBar from './DiskUsageBar';
-import DiskApi from '../App'
 
 function bytesToGigaBytes(bytes) {
   return (bytes / 1_073_741_824).toFixed(0);
