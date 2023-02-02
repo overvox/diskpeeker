@@ -20,6 +20,7 @@ jobs:
       uses: Bhacaz/checkout-files@v2
       with:
        files: diskpeeker-django
+       branch: ${{ github.head_ref || github.ref_name }}
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
@@ -30,6 +31,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run Tests
+      working-directory: ./diskpeeker-django/diskpeeker_project/
       run: |
-        cd ./diskpeeker-django/diskpeeker_project/
         python manage.py test

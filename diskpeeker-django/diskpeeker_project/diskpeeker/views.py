@@ -4,9 +4,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import status
 
-from .models import DiskInfo, DiskUsage, FullDiskInfo
-from .serializers import *
-from .services import DiskService
+from .models.disk_models import DiskInfo, DiskUsage, FullDiskInfo
+from .models.serializers import *
+from .services.disk_service import DiskService
 
 class DiskViewSet(viewsets.ViewSet):
     """API Endpoints for disk information"""
