@@ -1,7 +1,6 @@
-import logging
 import psutil
 
-from .models import DiskInfo, DiskUsage
+from diskpeeker.models.serializers import DiskInfo, DiskUsage
 
 class DiskService:
     """Service handling the fetching of disk related hardware data."""
@@ -16,12 +15,12 @@ class DiskService:
 
         for partition in disk_partitions:
             if DiskInfo.objects.filter(name = partition.device).exists():
-                pass # do nothing for now, maybe update or something
-                return True
+                pass # do nothing for now
             else:
                 diskinfo = DiskInfo(device=partition.device, name=partition.device, hidden=False)
                 diskinfo.save()
-                return True
+            
+        return True
 
     @staticmethod
     def get_disk_usages(getVisibleOnly: bool = False) -> list[DiskUsage]:

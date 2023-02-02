@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from .models import DiskInfo, DiskUsage, FullDiskInfo
+from .disk_models import DiskInfo, DiskUsage, FullDiskInfo
 
 class DiskInfoListSerializer(serializers.ListSerializer):
     def update(self, instance, validated_data):
