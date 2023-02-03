@@ -27,11 +27,12 @@ class DiskService:
         """gets current disk usage for all non-hidden disks."""
         disk_partitions = psutil.disk_partitions()
 
-        diskinfos: any
+        diskinfos: list[DiskInfo]
+
         if getVisibleOnly:
-            diskinfos = DiskInfo.objects.filter(hidden = False)
+            diskinfos = list(DiskInfo.objects.filter(hidden = False))
         else:
-            diskinfos = DiskInfo.objects.all()
+            diskinfos = list(DiskInfo.objects.all())
 
         disk_partitions = list(filter(lambda partition: any(info.device == partition.device for info in diskinfos), disk_partitions))
 

@@ -64,10 +64,10 @@ class DiskViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['GET'])
     def full(self, request):
-        allDisks = DiskInfo.objects.all()
-        usages = DiskService.get_disk_usages()
+        allDisks: list[DiskInfo] = list(DiskInfo.objects.all())
+        usages: list[DiskUsage] = DiskService.get_disk_usages()
 
-        fullDiskInfos = [] 
+        fullDiskInfos: list[FullDiskInfo]
 
         for disk in allDisks:
             usage: DiskUsage = next(filter(lambda usage: disk.device == usage.device, usages))

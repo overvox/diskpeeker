@@ -1,16 +1,14 @@
-import unittest
 from django.test import TestCase
 from unittest.mock import patch
-from typing import List
 from psutil._common import sdiskpart
 from diskpeeker.services.disk_service import DiskService
 from diskpeeker.models.disk_models import DiskInfo, DiskUsage
 
 class DiskServiceTestCase(TestCase):
 
-    mock_disk_partitions: List[sdiskpart] = list()
+    mock_disk_partitions: list[sdiskpart] = list()
 
-    def mocked_disk_partitions(self) -> List[sdiskpart]:
+    def mocked_disk_partitions(self) -> list[sdiskpart]:
         return self.mock_disk_partitions 
     
     def setUp(self) -> None:
@@ -39,8 +37,7 @@ class DiskServiceTestCase(TestCase):
         mock_psutil.disk_partitions = self.mocked_disk_partitions
 
         all_disks = DiskInfo.objects.all()
-        all_disks_count: int = len(all_disks)
-        disk_usages :List[DiskUsage] = DiskService.get_disk_usages(False)
+        disk_usages: list[DiskUsage] = DiskService.get_disk_usages(False)
 
         #asserts:
         self.assertListEqual(
@@ -51,9 +48,8 @@ class DiskServiceTestCase(TestCase):
     def test_get_disk_usages_visible_only(self, mock_psutil) -> None:
         mock_psutil.disk_partitions = self.mocked_disk_partitions
 
-        visisble_disks = DiskInfo.objects.filter(hidden = False)
-        visible_disks_count: int = len(visisble_disks)
-        disk_usages = DiskService.get_disk_usages(True)
+        visisble_disks: list[DiskInfo] = list(DiskInfo.objects.filter(hidden = False))
+        disk_usages: list[DiskUsage] = DiskService.get_disk_usages(True)
 
         # asserts:
         self.assertListEqual(
