@@ -30,6 +30,11 @@
     text-align: right;
 }
 
+#refreshButtonContainer > a{
+    margin-left: calc(var(--spacing) * 0.5);
+}
+
+
 #diskEditTable {
     margin-top: 1rem;
 }

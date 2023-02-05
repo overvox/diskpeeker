@@ -1,4 +1,5 @@
 import psutil
+from psutil._common import sdiskpart
 
 from diskpeeker.models.serializers import DiskInfo, DiskUsage
 
@@ -24,10 +25,14 @@ class DiskService:
 
     @staticmethod
     def get_disk_usages(getVisibleOnly: bool = False) -> list[DiskUsage]:
-        """gets current disk usage for all non-hidden disks."""
-        disk_partitions = psutil.disk_partitions()
+        """gets current disk usage for all or visible only disks."""
+        disk_partitions: list[sdiskpart] = psutil.disk_partitions()
 
-        diskinfos: list[DiskInfo]
+        diskinfos: list[DiskInfo] = []
+
+        # return empty list in case psutil was not able to fetch disk info from system
+        if not disk_partitions:
+            return [DiskUsage]
 
         if getVisibleOnly:
             diskinfos = list(DiskInfo.objects.filter(hidden = False))

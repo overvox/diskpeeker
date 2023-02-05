@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-7tpp$l87i24axg(+1c6u^2xm&g_7@=9)%zq9x!a8c_i3j*3)-k
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1'] # this is the host that Docker uses to run application
 
 
 # Application definition
@@ -127,7 +127,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 # react js front end cors whitelisting 
 CORS_ALLOWED_ORIGINS = [
-     'http://localhost:3000'
+     'http://localhost:3080'
 ]

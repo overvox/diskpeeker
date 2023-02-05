@@ -14,7 +14,7 @@ const DiskpeekerPage = () => {
     const getDiskData = async () => {
         try {
           setLoading(true)
-          const result = await axios('http://localhost:8000/diskinfo/full/');
+          const result = await axios('http://localhost:6064/diskinfo/full/');
           setDiskData(result.data)
   
           setError(null);
@@ -35,6 +35,18 @@ const DiskpeekerPage = () => {
         getDiskData();
     }
 
+    async function handleReconcileDisks() {
+        try {
+            setLoading(true);
+            const result = await axios.post('http://localhost:6064/diskinfo/init/');
+        } catch (err) {
+            setError(err.message);
+        } finally { 
+            setLoading(false);
+            getDiskData();
+        }
+    }
+
     useEffect(() => {
         getDiskData();
       }, []);
@@ -44,7 +56,7 @@ const DiskpeekerPage = () => {
             <main className='container'>
                 <Header></Header>
                 {error && !loading && (<div style={{color: "#c62828"}}>{`There is a problem fetching the disk data - ${error}`}</div>)}
-                <Diskpeeker diskData={diskData} loading={loading} onRefesh={handleRefresh}></Diskpeeker>
+                <Diskpeeker diskData={diskData} loading={loading} onRefresh={handleRefresh} onReconcile={handleReconcileDisks}></Diskpeeker>
                 <section id="buttons">
                     <div className='grid'>
                         <button className='secondary' onClick={() => setShowDiskOrgaModal(true)} >Edit Disks</button>

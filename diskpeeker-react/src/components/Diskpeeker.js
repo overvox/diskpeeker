@@ -43,7 +43,8 @@ const Diskpeeker = (props) => {
 
               {diskData && 
                 <div id="refreshButtonContainer">
-                  <a href="#" onClick={props.onRefesh} role="button" aria-busy={loading}>Refresh</a>
+                  <a href="#" onClick={props.onRefresh} role="button" aria-busy={loading}>Refresh</a>
+                  <a href="#" onClick={props.onReconcile} className="contrast" role="button" aria-busy={loading}>Reconcile</a>
                 </div>
                 }
               </article>
