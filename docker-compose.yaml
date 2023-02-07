@@ -1,0 +1,9 @@
+services:
+  web:
+    build: ./diskpeeker-react
+    image: diskpeeker_react
+    container_name: diskpeeker_react_app
+    ports:
+      - "3080:80"
+    environment:
+      - NGINX_PORT=3080

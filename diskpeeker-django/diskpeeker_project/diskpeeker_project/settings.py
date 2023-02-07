@@ -132,4 +132,5 @@ CORS_ORIGIN_ALLOW_ALL = True
 # react js front end cors whitelisting 
 CORS_ALLOWED_ORIGINS = [
      'http://localhost:3080'
+     'http://debussy:3080'
 ]
