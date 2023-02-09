@@ -15,7 +15,7 @@ class DiskService:
             return False
 
         for partition in disk_partitions:
-            if DiskInfo.objects.filter(name = partition.device).exists():
+            if DiskInfo.objects.filter(device = partition.device).exists():
                 pass # do nothing for now
             else:
                 diskinfo = DiskInfo(device=partition.device, name=partition.device, hidden=False)
