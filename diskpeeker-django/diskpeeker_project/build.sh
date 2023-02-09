@@ -13,7 +13,7 @@ pip install -r ../requirements.txt --target dist/
 # You probably want to specify what goes here
 cp -r \
 -t dist \
-diskpeeker diskpeeker_project manage.py
+diskpeeker diskpeeker_project static manage.py
 
 # finally, build!
 shiv --site-packages dist --compressed -p '/usr/bin/env python3.9' -o diskpeeker-django.pyz -e diskpeeker_project.main:main
