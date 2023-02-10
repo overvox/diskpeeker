@@ -5,7 +5,7 @@ function bytesToGigaBytes(bytes) {
   return (bytes / 1_073_741_824).toFixed(0);
 }
 
-const Diskpeeker = (props) => {
+const DiskOverview = (props) => {
     const [diskData, setDiskData] = useState(props.diskData);
     const [loading, setLoading] = useState(props.loading);
 
@@ -23,7 +23,7 @@ const Diskpeeker = (props) => {
 
             {diskData &&
               diskData.filter(isDiskVisible).map(({device, name, type, total, used, hidden}, index) => (
-                <div aria-busy={loading} className="diskContainer" key={device + "-" + name}>
+                <div aria-busy={loading} id="diskContainer" key={device + "-" + name}>
                   <strong>{!loading && ((index+1)  + ") " + name)}</strong>
                   <div className="grid">
                     <div>
@@ -43,7 +43,10 @@ const Diskpeeker = (props) => {
 
               {diskData && 
                 <div id="refreshButtonContainer">
-                  <a href="#" onClick={props.onRefesh} role="button" aria-busy={loading}>Refresh</a>
+                  <div className="grid">
+                    <button onClick={props.onRefresh}  aria-busy={loading}>Refresh</button>
+                    <button onClick={props.onReconcile} className="contrast" aria-busy={loading}>Reconcile</button>
+                  </div>
                 </div>
                 }
               </article>
@@ -51,4 +54,4 @@ const Diskpeeker = (props) => {
       );
 };
 
-export default Diskpeeker
+export default DiskOverview

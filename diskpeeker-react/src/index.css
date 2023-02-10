@@ -1,4 +1,4 @@
-#diskDashboard .grid>* {
+#diskContainer .grid>* {
     padding: calc(var(--spacing)/ 2) 0;
     border-radius: var(--border-radius);
     background: var(--code-background-color);
@@ -29,6 +29,11 @@
 #refreshButtonContainer {
     text-align: right;
 }
+
+#refreshButtonContainer > a{
+    margin-left: calc(var(--spacing) * 0.5);
+}
+
 
 #diskEditTable {
     margin-top: 1rem;

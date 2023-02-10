@@ -68,7 +68,7 @@ class DiskViewSet(viewsets.ViewSet):
         usages: list[DiskUsage] = DiskService.get_disk_usages()
 
         fullDiskInfos: list[FullDiskInfo] = []
-
+        
         for disk in allDisks:
             usage: DiskUsage = next(filter(lambda usage: disk.device == usage.device, usages))
             

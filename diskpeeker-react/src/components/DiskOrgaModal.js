@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import axios from "axios"
+import { DiskpeekerApi } from '../services/api/DiskpeekerApi';
 
 function DiskOrgaModal(props) {
     const [modalOpen, setModalOpen] = useState(props.open);
@@ -12,8 +12,7 @@ function DiskOrgaModal(props) {
     const getDiskData = async () => {
         try {
           setLoading(true)
-          await new Promise(r => setTimeout(r, 100));
-          const result = await axios('http://localhost:8000/diskinfo/');
+          const result = await DiskpeekerApi.list();
           setDiskData(result.data)
   
           setError(null);
@@ -54,7 +53,7 @@ function DiskOrgaModal(props) {
         var updatedDiskData = diskData.map(disk => ({ id: disk.id, name: disk.name, hidden: disk.hidden }));
 
         try {
-            const result = await axios.put('http://localhost:8000/diskinfo/', updatedDiskData);
+            await DiskpeekerApi.updateMultiple(updatedDiskData);
             props.onClose();
             props.onDiskDataSaved();
         } catch (err) {
