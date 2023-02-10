@@ -1,6 +1,9 @@
 services:
   web:
-    build: ./diskpeeker-react
+    build: 
+      context: ./diskpeeker-react
+      args:
+          REACT_APP_DISKPEEKER_API_BASE_URL: ${REACT_APP_DISKPEEKER_API_BASE_URL}  
     image: diskpeeker_react
     container_name: diskpeeker_react_app
     ports:
