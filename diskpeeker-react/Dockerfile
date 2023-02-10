@@ -10,7 +10,6 @@ RUN npm run build
 FROM nginx:1.23.3
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
-COPY nginx-default.conf.template /etc/nginx/templates/
 COPY --from=react-build /app/build .
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
 
