@@ -7,20 +7,25 @@ from diskpeeker.models.disk_models import DiskInfo, DiskUsage
 class DiskServiceTestCase(TestCase):
 
     mock_disk_partitions: list[sdiskpart] = list()
+    mock_persisted_disks: list[DiskInfo] = [
+            DiskInfo(device="disk1", name="disk1-name", hidden=False),
+            DiskInfo(device="disk2", name="disk2-name", hidden=False),
+            DiskInfo(device="disk3", name="disk3-name", hidden=True),
+            DiskInfo(device="disk4", name="disk4-name", hidden=True)
+        ]
 
     def mocked_disk_partitions(self) -> list[sdiskpart]:
         return self.mock_disk_partitions 
     
     def setUp(self) -> None:
-        DiskInfo.objects.create(device="disk1", name="disk1", hidden=False)
-        DiskInfo.objects.create(device="disk2", name="disk2", hidden=False)
-        DiskInfo.objects.create(device="disk3", name="disk3", hidden=True)
-        DiskInfo.objects.create(device="disk4", name="disk4", hidden=True)
+        DiskInfo.objects.bulk_create(self.mock_persisted_disks)
 
-        self.mock_disk_partitions.append(sdiskpart('disk1', 'disk1mnt', 'NTFS', 'rw,fixed', 255, 260))
-        self.mock_disk_partitions.append(sdiskpart('disk2', 'disk2mnt', 'NTFS', 'rw,fixed', 255, 260))
-        self.mock_disk_partitions.append(sdiskpart('disk3', 'disk3mnt', 'NTFS', 'rw,fixed', 255, 260))
-        self.mock_disk_partitions.append(sdiskpart('disk4', 'disk3mnt', 'NTFS', 'rw,fixed', 255, 260))
+        self.mock_disk_partitions.extend([
+            sdiskpart('disk1', 'disk1mnt', 'NTFS', 'rw,fixed', 255, 260),
+            sdiskpart('disk2', 'disk2mnt', 'NTFS', 'rw,fixed', 255, 260),
+            sdiskpart('disk3', 'disk3mnt', 'NTFS', 'rw,fixed', 255, 260),
+            sdiskpart('disk4', 'disk3mnt', 'NTFS', 'rw,fixed', 255, 260)
+        ])
 
     def tearDown(self) -> None:
         self.mock_disk_partitions.clear()
@@ -28,9 +33,42 @@ class DiskServiceTestCase(TestCase):
         return super().tearDown()
 
     @patch('diskpeeker.services.disk_service.psutil', side_effect=None)
-    def test_init_disks(self, mock_psutil) -> bool:
-        # TODO: implement
-        return True
+    def test_init_disks_empty_db(self, mock_psutil) -> None:
+        mock_psutil.disk_partitions = self.mocked_disk_partitions
+
+        DiskInfo.objects.all().delete()
+        DiskService.init_disks()
+
+        #asserts:
+        self.assertListEqual(
+            [disk.device for disk in self.mock_persisted_disks],
+            [disk.device for disk in list(DiskInfo.objects.all())]
+        ) 
+
+    @patch('diskpeeker.services.disk_service.psutil', side_effect=None)
+    def test_init_disks_no_db_changes(self, mock_psutil) -> None:
+        mock_psutil.disk_partitions = self.mocked_disk_partitions
+        DiskService.init_disks()
+
+        #asserts:
+        self.assertListEqual(
+            [disk.device for disk in self.mock_persisted_disks],
+            [disk.device for disk in list(DiskInfo.objects.all())]
+        )
+
+    @patch('diskpeeker.services.disk_service.psutil', side_effect=None)
+    def test_init_disks_outdated_db(self, mock_psutil) -> None:
+        new_disk: DiskInfo = DiskInfo(device="new-disk", name="new-disk-name", hidden=True)
+        self.mock_disk_partitions.append(new_disk)
+        mock_psutil.disk_partitions = self.mocked_disk_partitions
+
+        DiskService.init_disks()
+
+        #asserts:
+        self.assertListEqual(
+            [disk.device for disk in self.mock_persisted_disks + [new_disk]],
+            [disk.device for disk in list(DiskInfo.objects.all())]
+        ) 
 
     @patch('diskpeeker.services.disk_service.psutil', side_effect=None)
     def test_get_disk_usages(self, mock_psutil) -> None:
