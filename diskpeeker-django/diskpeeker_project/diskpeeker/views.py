@@ -64,18 +64,7 @@ class DiskViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['GET'])
     def full(self, request):
-        allDisks: list[DiskInfo] = list(DiskInfo.objects.all())
-        usages: list[DiskUsage] = DiskService.get_disk_usages()
+        full_disk_infos = DiskService.get_full_disk_info(list(DiskInfo.objects.all()))
 
-        fullDiskInfos: list[FullDiskInfo] = []
-        
-        for disk in allDisks:
-            usage: DiskUsage = next(filter(lambda usage: disk.device == usage.device, usages))
-            
-            if usage:
-                fullDiskInfos.append(FullDiskInfo(name=disk.name, device=disk.device, hidden=disk.hidden, type=usage.type, total=usage.total, used=usage.used))
-            else:
-                fullDiskInfos.append(FullDiskInfo(name=disk.name, device=disk.device, hidden=disk.hidden, type="Unknown", total=0, used=0))
-
-        serializer = FullDiskInfoSerializer(fullDiskInfos, many=True)
+        serializer = FullDiskInfoSerializer(full_disk_infos, many=True)
         return Response(data=serializer.data)

@@ -1,7 +1,6 @@
 import psutil
 from psutil._common import sdiskpart
-
-from diskpeeker.models.serializers import DiskInfo, DiskUsage
+from diskpeeker.models.disk_models import DiskInfo, DiskUsage, FullDiskInfo
 
 class DiskService:
     """Service handling the fetching of disk related hardware data."""
@@ -24,17 +23,22 @@ class DiskService:
         return True
 
     @staticmethod
-    def get_disk_usages(getVisibleOnly: bool = False) -> list[DiskUsage]:
+    def get_disk_usages(get_visible_only: bool = False) -> list[DiskUsage]:
         """gets current disk usage for all or visible only disks."""
-        disk_partitions: list[sdiskpart] = psutil.disk_partitions()
+        disk_partitions: list[sdiskpart]
+
+        try:
+            disk_partitions = psutil.disk_partitions()
+        except:
+            disk_partitions = []
 
         diskinfos: list[DiskInfo] = []
 
         # return empty list in case psutil was not able to fetch disk info from system
-        if not disk_partitions:
+        if not disk_partitions or len(disk_partitions) == 0:
             return [DiskUsage]
 
-        if getVisibleOnly:
+        if get_visible_only:
             diskinfos = list(DiskInfo.objects.filter(hidden = False))
         else:
             diskinfos = list(DiskInfo.objects.all())
@@ -51,3 +55,19 @@ class DiskService:
                 usage_list.append(DiskUsage(device=partition.device, type=partition.fstype, total=0, used=0))
             
         return usage_list
+    
+    @staticmethod
+    def get_full_disk_info(all_disks: list[DiskInfo]) -> list[FullDiskInfo]:
+        usages: list[DiskUsage] = DiskService.get_disk_usages()
+
+        full_disk_infos: list[FullDiskInfo] = []
+        
+        for disk in all_disks:
+            usage: DiskUsage = next(filter(lambda usage: disk.device == usage.device, usages), None)
+            
+            if usage:
+                full_disk_infos.append(FullDiskInfo(name=disk.name, device=disk.device, hidden=disk.hidden, type=usage.type, total=usage.total, used=usage.used))
+            else:
+                full_disk_infos.append(FullDiskInfo(name=disk.name, device=disk.device, hidden=disk.hidden, type="Unknown", total=0, used=0))
+
+        return full_disk_infos
