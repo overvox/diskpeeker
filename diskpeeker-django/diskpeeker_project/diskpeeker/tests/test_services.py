@@ -2,7 +2,7 @@ from django.test import TestCase
 from unittest.mock import patch
 from psutil._common import sdiskpart
 from diskpeeker.services.disk_service import DiskService
-from diskpeeker.models.disk_models import DiskInfo, DiskUsage
+from diskpeeker.models.disk_models import DiskInfo, DiskUsage, FullDiskInfo
 
 class DiskServiceTestCase(TestCase):
 
@@ -93,4 +93,29 @@ class DiskServiceTestCase(TestCase):
         self.assertListEqual(
             [disk.device for disk in visisble_disks], 
             [usage.device for usage in disk_usages])
+
+    @patch('diskpeeker.services.disk_service.psutil', side_effect=None)
+    def test_get_full_disk_info(self, mock_psutil) -> None:
+        mock_psutil.disk_partitions = self.mocked_disk_partitions
+
+        all_disks = DiskInfo.objects.all()
+        full_disk_infos: list[FullDiskInfo] = DiskService.get_full_disk_info(all_disks)
+
+        #asserts:
+        self.assertListEqual(
+            [disk.device for disk in all_disks], 
+            [full_info.device for full_info in full_disk_infos])
+
+    @patch('diskpeeker.services.disk_service.psutil', side_effect=None)
+    def test_get_full_disk_info_missing_usage(self, mock_psutil) -> None:
+        mock_psutil.disk_partitions = self.mocked_disk_partitions
+        DiskInfo.objects.create(device="missing-disk", name="missing-disk", hidden=False)
+
+        all_disks = DiskInfo.objects.all()
+        full_disk_infos: list[FullDiskInfo] = DiskService.get_full_disk_info(all_disks)
+
+        #asserts:
+        self.assertListEqual(
+            [disk.device for disk in all_disks], 
+            [full_info.device for full_info in full_disk_infos])
         
